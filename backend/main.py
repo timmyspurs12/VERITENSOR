@@ -60,6 +60,31 @@ def create_app() -> FastAPI:
     app.include_router(router)
     app.include_router(admin_router)
 
+    @app.get("/", tags=["system"], include_in_schema=False)
+    def root():
+        """Service descriptor. The API has no UI of its own."""
+        svc = get_service()
+        info = svc.mode_info() if svc.ready else {"mode": "starting"}
+        return {
+            "service": "VERITENSOR API",
+            "description": "The decentralized verification layer for machine "
+                           "intelligence — backend for the VERITENSOR subnet.",
+            "status": "ok" if svc.ready else "starting",
+            "mode": info.get("mode"),
+            "on_chain": info.get("on_chain", False),
+            "note": ("This host serves the API only. Figures are produced by "
+                     "the local simulation engine unless on_chain is true."),
+            "endpoints": {
+                "health": "/health",
+                "docs": "/api/docs",
+                "network_stats": "/api/network/stats",
+                "miners": "/api/miners",
+                "chain_status": "/api/chain/status",
+            },
+            "repository": "https://github.com/timmyspurs12/veritensor",
+        }
+
+        
     @app.get("/health", tags=["system"])
     def health():
         svc = get_service()

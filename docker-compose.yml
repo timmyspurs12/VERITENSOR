@@ -1,0 +1,114 @@
+# VERITENSOR — full local stack: PostgreSQL + FastAPI subnet backend + Next.js.
+#   docker compose up --build
+#   frontend  http://localhost:3000
+#   API docs  http://localhost:8000/api/docs
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: veritensor
+      POSTGRES_PASSWORD: veritensor
+      POSTGRES_DB: veritensor
+    volumes:
+      - veritensor-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U veritensor"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    environment:
+      ENVIRONMENT: ${ENVIRONMENT:-development}
+      SIMULATION_MODE: ${SIMULATION_MODE:-true}
+      DATABASE_URL: postgresql+psycopg://veritensor:veritensor@postgres:5432/veritensor
+      SUBNET_NETUID: ${SUBNET_NETUID:-47}
+      BITTENSOR_NETWORK: ${BITTENSOR_NETWORK:-test}
+      BITTENSOR_WALLET_NAME: ${BITTENSOR_WALLET_NAME:-}
+      BITTENSOR_HOTKEY_NAME: ${BITTENSOR_HOTKEY_NAME:-}
+      ADMIN_API_KEY: ${ADMIN_API_KEY:-}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000}
+      SEED_TASKS: ${SEED_TASKS:-260}
+      VERITENSOR_COMMIT_SECRET: ${VERITENSOR_COMMIT_SECRET:-local-dev-secret}
+      MODEL_API_KEY: ${MODEL_API_KEY:-}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    environment:
+      BACKEND_URL: http://backend:8000
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+
+  # ---------------------------------------------------------------- neurons
+  # Standalone subnet processes. They do not need the backend or the database.
+  #
+  #   docker compose --profile neurons up --build
+  #
+  # Wallets are mounted read-only from the host; no key material is baked into
+  # an image. On testnet, set VERITENSOR_MODE=bittensor_testnet and SUBNET_NETUID
+  # in .env — the config validator refuses unsigned transport in that mode.
+  miner:
+    profiles: ["neurons"]
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    command: >
+      python -m subnet.neurons.miner --config configs/miner.yaml
+      --uid ${VT_MINER_UID:-0} --name miner-${VT_MINER_UID:-0}
+    environment:
+      VERITENSOR_MODE: ${VERITENSOR_MODE:-local_neurons}
+      VERITENSOR_AXON_HOST: 0.0.0.0
+      VERITENSOR_AXON_PORT: 9100
+      VERITENSOR_AXON_EXTERNAL_IP: ${VT_MINER_EXTERNAL_IP:-miner}
+      BITTENSOR_WALLET_NAME: ${BITTENSOR_WALLET_NAME:-}
+      BITTENSOR_HOTKEY_NAME: ${BITTENSOR_HOTKEY_NAME:-}
+      BITTENSOR_WALLET_PATH: /wallets
+      SUBNET_NETUID: ${SUBNET_NETUID:-0}
+      BITTENSOR_NETWORK: ${BITTENSOR_NETWORK:-test}
+    volumes:
+      - ${BITTENSOR_WALLET_PATH:-./.wallets-dev}:/wallets:ro
+      - ./evidence:/app/evidence
+    ports:
+      - "9100:9100"
+    restart: unless-stopped
+
+  validator:
+    profiles: ["neurons"]
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    command: >
+      python -m subnet.neurons.validator --config configs/validator.yaml
+      --miners 0=http://miner:9100
+    environment:
+      VERITENSOR_MODE: ${VERITENSOR_MODE:-local_neurons}
+      BITTENSOR_WALLET_NAME: ${BITTENSOR_WALLET_NAME:-}
+      BITTENSOR_HOTKEY_NAME: ${BITTENSOR_VALIDATOR_HOTKEY:-validator-00}
+      BITTENSOR_WALLET_PATH: /wallets
+      SUBNET_NETUID: ${SUBNET_NETUID:-0}
+      BITTENSOR_NETWORK: ${BITTENSOR_NETWORK:-test}
+    volumes:
+      - ${BITTENSOR_WALLET_PATH:-./.wallets-dev}:/wallets:ro
+      - ./evidence:/app/evidence
+    depends_on:
+      - miner
+    restart: unless-stopped
+
+volumes:
+  veritensor-pgdata:

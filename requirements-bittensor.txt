@@ -1,0 +1,15 @@
+# Bittensor SDK — optional, required only for signed transport and chain access.
+#
+#   pip install -r requirements-bittensor.txt
+#
+# VERITENSOR targets the v11 API surface:
+#   bittensor.http_auth   (btauth/1 signed HTTP; replaces axon/dendrite/Synapse)
+#   bittensor.subtensor   (namespaced chain client)
+#   bittensor.set_weights (one-call weight submission)
+#   bittensor.Wallet, bittensor.BurnedRegister, bittensor.ServeAxon
+#
+# Verified against 11.1.0. The capability probe in subnet/chain/sdk.py reports a
+# precise error instead of failing deep inside a validator loop if a different
+# generation is installed.
+bittensor>=11,<12
+PyYAML>=6.0

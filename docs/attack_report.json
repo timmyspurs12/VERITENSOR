@@ -1,0 +1,109 @@
+{
+  "A1 memorisation": {
+    "defence": "dynamic generation from random seeds",
+    "outcome": "defeated",
+    "prompt_reuse_rate": 0.0075,
+    "samples": 400
+  },
+  "A10 evidence keyword stuffing": {
+    "defence": "coverage capped; specificity + structure terms",
+    "honest": 0.419,
+    "outcome": "mitigated",
+    "stuffed": 0.0
+  },
+  "A11 hostile-majority network": {
+    "defence": "full mechanism",
+    "honest_miners": 4,
+    "honest_share": 0.8916,
+    "hostile_miners": 6,
+    "hostile_share": 0.1084,
+    "outcome": "defeated"
+  },
+  "A2 replay (cross-task)": {
+    "defence": "nonce + task binding",
+    "outcome": "defeated",
+    "reason": "nonce_mismatch"
+  },
+  "A2 replay (duplicate submit)": {
+    "defence": "per-(task,miner) submission ledger",
+    "outcome": "defeated",
+    "reason": "duplicate_submission"
+  },
+  "A3 constant-answer farming": {
+    "cheat_emission": 0.0,
+    "cheat_reputation": 0.0796,
+    "defence": "accuracy weight + duplicate detection + boilerplate evidence",
+    "flags": {
+      "boilerplate_evidence": 59,
+      "duplicate_response": 52
+    },
+    "honest_reputation": 0.653,
+    "outcome": "defeated"
+  },
+  "A4 confidence inflation @0.9": {
+    "accuracy": 0.6,
+    "calibration": 0.0,
+    "defence": "Brier-based calibration over a rolling window",
+    "outcome": "defeated"
+  },
+  "A4 confidence inflation @0.95": {
+    "accuracy": 0.6,
+    "calibration": 0.0,
+    "defence": "Brier-based calibration over a rolling window",
+    "outcome": "defeated"
+  },
+  "A4 confidence inflation @0.99": {
+    "accuracy": 0.6,
+    "calibration": 0.0,
+    "defence": "Brier-based calibration over a rolling window",
+    "outcome": "defeated"
+  },
+  "A5 shallow pattern matching": {
+    "brittle_hold_rate": 0.0,
+    "brittle_reputation": 0.6465,
+    "defence": "adversarial mutation probes",
+    "outcome": "defeated",
+    "stable_hold_rate": 1.0,
+    "stable_reputation": 0.7942
+  },
+  "A6 benchmark scraping": {
+    "checked": 33,
+    "defence": "hidden ground truth + private bank",
+    "leaks": 0,
+    "outcome": "defeated"
+  },
+  "A6b task-type detection": {
+    "defence": "benchmark rotation",
+    "distribution": {
+      "adversarial": 13,
+      "generated": 80,
+      "hidden_benchmark": 19,
+      "mutation": 8
+    },
+    "outcome": "mitigated"
+  },
+  "A7 collusion (identical evidence)": {
+    "defence": "cross-miner evidence fingerprints",
+    "flag_count": 3,
+    "outcome": "detected"
+  },
+  "A7b colluding majority": {
+    "agreement": 0.833333,
+    "cartel_score": 0.225,
+    "correct_share": 0.166667,
+    "defence": "verifier is authoritative, not consensus",
+    "honest_score": 0.675,
+    "outcome": "defeated"
+  },
+  "A8 sybil / small sample": {
+    "defence": "minimum sample + trust ramp",
+    "honest_share": 1.0,
+    "outcome": "defeated",
+    "sybil_share": 0.0
+  },
+  "A9 API abuse": {
+    "allowed_of_200": 10,
+    "defence": "per-miner token bucket + per-IP middleware",
+    "outcome": "defeated"
+  }
+}

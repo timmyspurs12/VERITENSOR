@@ -1,0 +1,62 @@
+# VERITENSOR validator neuron.
+#   python -m subnet.neurons.validator --config configs/validator.yaml
+#
+# Contains NO secrets.
+
+mode: local_neurons          # simulation | local_neurons | bittensor_testnet
+uid: 0
+name: veritensor-validator-00
+strategy: broadcast          # broadcast | sampling | adversarial | security_focus
+                             # | quantitative | fixed_baseline
+
+wallet:
+  name: veritensor-dev
+  hotkey: validator-00
+  path: .wallets-dev
+  create_if_missing: true    # UNFUNDED dev keys; rejected on testnet
+
+chain:
+  network: test
+  netuid: 0
+  mechid: 0
+  version_key: 0
+  submit_weights: false      # true only when the hotkey is registered on netuid
+
+discovery: static            # static | metagraph (metagraph is required on testnet)
+miners:
+  - { uid: 0, url: "http://127.0.0.1:9100", name: miner-00 }
+  - { uid: 1, url: "http://127.0.0.1:9101", name: miner-01 }
+  - { uid: 2, url: "http://127.0.0.1:9102", name: miner-02 }
+
+rounds: 0                    # 0 = run until interrupted
+tasks_per_round: 1
+interval_s: 5.0
+weight_interval_rounds: 10
+request_timeout_s: 20.0
+unsigned_identity: null      # set a string to run without wallets (dev only)
+
+task:
+  categories: [code, math, reasoning, data]
+  difficulty_mode: adaptive  # easy | normal | hard | adaptive
+  fixed_difficulty: 5
+  timeout_s: 20
+  seed: null
+
+# Optional mechanism overrides. Omit to use the audited defaults
+# (45/20/15/10/10). Values must sum to 1.0.
+scoring:
+  accuracy: null
+  evidence: null
+  robustness: null
+  calibration: null
+  latency: null
+
+logging:
+  level: INFO
+  json: false
+  file: null
+
+evidence:
+  enabled: true
+  dir: evidence
+  label: ""

@@ -1,0 +1,46 @@
+# VERITENSOR miner neuron.
+#   python -m subnet.neurons.miner --config configs/miner.yaml
+#
+# Contains NO secrets. Wallet *names* are configuration; the keys themselves
+# live in ~/.bittensor/wallets and are read by the Bittensor SDK only.
+
+mode: local_neurons          # simulation | local_neurons | bittensor_testnet
+uid: 0
+name: veritensor-miner-00
+
+wallet:
+  name: veritensor-dev
+  hotkey: miner-00
+  path: .wallets-dev        # dev keys stay out of ~/.bittensor
+  # Creates UNFUNDED local keys when missing. Rejected when mode=bittensor_testnet.
+  create_if_missing: true
+
+axon:
+  host: 0.0.0.0
+  port: 9100
+  external_ip: 127.0.0.1    # address advertised to validators / published on chain
+  external_port: null
+  max_request_age_s: 10.0
+  allow_unsigned: false     # true disables btauth/1 — development only
+
+chain:
+  network: test             # test | finney | ws://127.0.0.1:9944
+  netuid: 0                 # set after registering; 0 means "not configured"
+  mechid: 0
+  serve_axon: false         # publish this endpoint on chain (costs a transaction)
+
+solver:
+  backend: profiled         # heuristic | profiled | model
+  profile: balanced         # archetype when backend=profiled
+  model: ""                 # model name when backend=model (key from MODEL_API_KEY)
+  max_solve_ms: 20000
+
+logging:
+  level: INFO
+  json: false
+  file: null
+
+evidence:
+  enabled: true
+  dir: evidence
+  label: ""

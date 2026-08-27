@@ -1,0 +1,34 @@
+{
+  "family": "data",
+  "description": "Held-out data-analysis items over fixed tables.",
+  "items": [
+    {
+      "id": "data-001", "difficulty": 5,
+      "prompt": "```csv\nid,region,latency_ms,status\nn01,eu-west,104,ok\nn02,us-east,111,ok\nn03,eu-west,98,ok\nn04,ap-south,860,degraded\nn05,us-east,107,ok\nn06,eu-west,102,ok\n```\n\nIdentify the anomalous node id(s) whose latency is a clear outlier. Answer with a comma-separated list of ids only.",
+      "answer": "n04", "verifier": "set_match", "params": {"items": ["n04"]},
+      "keywords": ["outlier", "standard deviation", "z-score"],
+      "explanation": "n04 is ~8σ above the mean of the remaining nodes."
+    },
+    {
+      "id": "data-002", "difficulty": 4,
+      "prompt": "```csv\nid,region,latency_ms,status\nn01,eu-west,104,ok\nn02,us-east,111,ok\nn03,eu-west,98,ok\nn04,ap-south,120,degraded\nn05,us-east,107,ok\n```\n\nCompute the median of `latency_ms` across all rows (2 dp). Answer with the number only.",
+      "answer": "107.00", "verifier": "numeric", "params": {"atol": 0.01, "rtol": 0.0},
+      "keywords": ["median", "sort", "aggregate"],
+      "explanation": "Sorted: 98, 104, 107, 111, 120 → median 107."
+    },
+    {
+      "id": "data-003", "difficulty": 6,
+      "prompt": "```csv\nthroughput,latency\n10,180\n20,166\n30,151\n40,133\n50,120\n60,104\n```\n\nClassify the linear relationship between `throughput` and `latency` as POSITIVE, NEGATIVE or NONE (|Pearson r| <= 0.5 counts as NONE).",
+      "answer": "negative", "verifier": "exact", "params": {"aliases": ["NEGATIVE"]},
+      "keywords": ["pearson", "correlation", "slope"],
+      "explanation": "Latency decreases monotonically with throughput; r ≈ -0.999."
+    },
+    {
+      "id": "data-004", "difficulty": 7,
+      "prompt": "```csv\nminer,tasks,correct\nalpha,120,108\nbravo,40,38\ncirrus,300,240\n```\n\nWhich miner has the highest accuracy? Answer with the miner name only.",
+      "answer": "bravo", "verifier": "exact",
+      "keywords": ["ratio", "accuracy", "comparison"],
+      "explanation": "0.90, 0.95, 0.80 → bravo. Note the sample-size caveat the emission model addresses separately."
+    }
+  ]
+}

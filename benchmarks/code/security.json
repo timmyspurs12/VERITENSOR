@@ -1,0 +1,80 @@
+{
+  "family": "code",
+  "description": "Held-out code-security items. Kept out of the generated pool so the same problems are never produced by a generator, and never published with their answers.",
+  "items": [
+    {
+      "id": "code-sec-001",
+      "difficulty": 6,
+      "prompt": "Analyse the following Python snippet for security defects.\n\n```python\nimport sqlite3\n\ndef search(conn, term):\n    cur = conn.cursor()\n    cur.execute(\"SELECT id, title FROM docs WHERE title LIKE '%%%s%%'\" % term)\n    return cur.fetchall()\n```\n\nAnswer with exactly one word: VULNERABLE or SAFE.",
+      "answer": "vulnerable",
+      "verifier": "boolean",
+      "keywords": [
+        "string formatting",
+        "sql injection",
+        "parameterized",
+        "cwe-89"
+      ],
+      "explanation": "%-formatting interpolates the term directly into the SQL string."
+    },
+    {
+      "id": "code-sec-002",
+      "difficulty": 7,
+      "prompt": "Analyse the following Python snippet for security defects.\n\n```python\nimport hmac, hashlib\n\ndef verify(secret, payload, signature):\n    expected = hmac.new(secret, payload, hashlib.sha256).hexdigest()\n    return hmac.compare_digest(expected, signature)\n```\n\nAnswer with exactly one word: VULNERABLE or SAFE.",
+      "answer": "safe",
+      "verifier": "boolean",
+      "keywords": [
+        "constant time",
+        "compare_digest",
+        "timing attack",
+        "hmac"
+      ],
+      "explanation": "Uses a constant-time comparison, so no timing oracle is exposed."
+    },
+    {
+      "id": "code-sec-003",
+      "difficulty": 8,
+      "prompt": "Analyse the following Python snippet for security defects.\n\n```python\nimport pickle, base64\n\ndef load_session(cookie):\n    return pickle.loads(base64.b64decode(cookie))\n```\n\nAnswer with exactly one word: VULNERABLE or SAFE.",
+      "answer": "vulnerable",
+      "verifier": "boolean",
+      "keywords": [
+        "pickle",
+        "deserialization",
+        "remote code execution",
+        "cwe-502"
+      ],
+      "explanation": "Unpickling attacker-controlled data permits arbitrary code execution."
+    },
+    {
+      "id": "code-sec-004",
+      "difficulty": 5,
+      "prompt": "Analyse the following Python snippet for security defects.\n\n```python\nimport secrets\n\ndef reset_token():\n    return secrets.token_urlsafe(32)\n```\n\nAnswer with exactly one word: VULNERABLE or SAFE.",
+      "answer": "safe",
+      "verifier": "boolean",
+      "keywords": [
+        "csprng",
+        "secrets",
+        "entropy",
+        "token"
+      ],
+      "explanation": "secrets.token_urlsafe draws from a cryptographically secure source."
+    },
+    {
+      "id": "code-sec-005",
+      "difficulty": 9,
+      "prompt": "How many times does the loop body execute?\n\n```python\ndef f():\n    n = 0\n    for i in range(3, 30, 4):\n        for j in range(i % 3):\n            n += 1\n    return n\n```\n\nAnswer with the integer returned by f().",
+      "answer": "6",
+      "verifier": "numeric",
+      "params": {
+        "atol": 0.0,
+        "rtol": 0.0
+      },
+      "keywords": [
+        "range",
+        "modulo",
+        "nested loop",
+        "trace"
+      ],
+      "explanation": "i ∈ {3,7,11,15,19,23,27}; i%3 ∈ {0,1,2,0,1,2,0}; total = 6 (verified by executing the reference implementation)."
+    }
+  ]
+}

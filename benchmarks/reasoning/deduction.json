@@ -1,0 +1,71 @@
+{
+  "family": "reasoning",
+  "description": "Held-out deterministic deduction items.",
+  "items": [
+    {
+      "id": "reason-001",
+      "difficulty": 6,
+      "prompt": "Four validators (Custos, Lattice, Arbiter, Beacon — listed in no particular order) finished an audit round in a strict order with no ties.\n  1. Beacon finished somewhere before Custos.\n  2. Arbiter finished immediately before Beacon.\n  3. Lattice finished last.\n\nList the finishing order from first to last, comma separated.",
+      "answer": "Arbiter, Beacon, Custos, Lattice",
+      "verifier": "sequence",
+      "params": {
+        "items": [
+          "Arbiter",
+          "Beacon",
+          "Custos",
+          "Lattice"
+        ]
+      },
+      "keywords": [
+        "constraint",
+        "ordering",
+        "elimination"
+      ],
+      "explanation": "Lattice is fixed last; Arbiter immediately precedes Beacon; Beacon precedes Custos."
+    },
+    {
+      "id": "reason-002",
+      "difficulty": 7,
+      "prompt": "Three miners (Onyx, Prism, Quill) each run in exactly one distinct region (region-1, region-2, region-3).\n  - Onyx is NOT in region-3.\n  - Quill is in region-3.\n  - Prism is NOT in region-1.\n\nWhich region hosts Onyx? Answer with the region identifier only.",
+      "answer": "region-1",
+      "verifier": "exact",
+      "keywords": [
+        "exclusion",
+        "assignment",
+        "elimination"
+      ],
+      "explanation": "Quill=region-3, Prism≠region-1 → Prism=region-2, so Onyx=region-1."
+    },
+    {
+      "id": "reason-003",
+      "difficulty": 5,
+      "prompt": "Continue the sequence with the next single integer:\n\n  2, 6, 14, 30, 62, ?\n\nAnswer with the integer only.",
+      "answer": "126",
+      "verifier": "numeric",
+      "params": {
+        "atol": 0.0,
+        "rtol": 0.0
+      },
+      "keywords": [
+        "recurrence",
+        "doubling",
+        "difference"
+      ],
+      "explanation": "x → 2x + 2; 62*2 + 2 = 126."
+    },
+    {
+      "id": "reason-004",
+      "difficulty": 8,
+      "prompt": "Every miner that fails a robustness probe loses emission weight. Some miners that memorise benchmarks fail robustness probes. Which of the following MUST be true?\n  (a) Every miner that memorises benchmarks loses emission weight.\n  (b) Some miners that memorise benchmarks lose emission weight.\n  (c) No miner that loses emission weight memorises benchmarks.\n  (d) Every miner that loses emission weight failed a probe.\n\nAnswer with the single letter.",
+      "answer": "b",
+      "verifier": "multiple_choice",
+      "keywords": [
+        "syllogism",
+        "quantifier",
+        "some",
+        "entailment"
+      ],
+      "explanation": "Some memorisers fail probes; all probe-failures lose weight; therefore some memorisers lose weight."
+    }
+  ]
+}

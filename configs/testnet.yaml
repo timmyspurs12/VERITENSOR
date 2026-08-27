@@ -1,0 +1,76 @@
+# VERITENSOR — Bittensor testnet validator profile.
+#
+#   python -m subnet.neurons.validator --config configs/testnet.yaml
+#
+# This file is INERT until you supply the four values marked REQUIRED below.
+# It contains no secrets: only wallet *names*. The keys themselves stay in
+# ~/.bittensor/wallets and are read by the Bittensor SDK.
+#
+# Before this config can run, complete docs/DEPLOYMENT_CHECKLIST.md:
+#   1. create a coldkey and hotkeys        (btcli wallet new_coldkey / new_hotkey)
+#   2. fund the coldkey on the test network
+#   3. choose or create a subnet           (btcli subnet list / subnet create)
+#   4. register each hotkey on the netuid  (btcli subnet register — burns TAO)
+#   5. verify with:  python -m scripts.preflight
+#
+# Validation refuses to start this profile with unsigned transport, generated
+# wallets, static miner discovery, or netuid 0.
+
+mode: bittensor_testnet
+
+uid: 0
+name: veritensor-validator-testnet
+strategy: broadcast
+
+wallet:
+  name: veritensor            # REQUIRED — your coldkey/wallet name
+  hotkey: validator-00        # REQUIRED — a hotkey registered on the netuid
+  path: ~/.bittensor/wallets
+  create_if_missing: false    # must stay false on testnet
+
+chain:
+  network: test               # REQUIRED — test | finney | ws://<endpoint>
+  netuid: 0                   # REQUIRED — set to your registered netuid
+  mechid: 0                   # 0 on ordinary subnets (v10+ multi-mechanism only)
+  version_key: 0
+  serve_axon: false           # validators do not serve an axon
+  submit_weights: true        # submits on chain via bittensor.set_weights
+
+# On testnet, miners are discovered from the on-chain metagraph: every neuron
+# that published an axon with ServeAxon becomes a query target. The static
+# `miners` list is ignored and rejected by validation in this mode.
+discovery: metagraph
+miners: []
+
+rounds: 0                     # 0 = run continuously
+tasks_per_round: 1
+interval_s: 12.0
+# Subnets rate-limit weight setting; align this with the subnet tempo so the
+# validator is not rejected for submitting too often.
+weight_interval_rounds: 20
+request_timeout_s: 20.0
+unsigned_identity: null       # must stay null on testnet
+
+task:
+  categories: [code, math, reasoning, data]
+  difficulty_mode: adaptive
+  fixed_difficulty: 5
+  timeout_s: 20
+  seed: null
+
+scoring:                      # null = audited defaults (45/20/15/10/10)
+  accuracy: null
+  evidence: null
+  robustness: null
+  calibration: null
+  latency: null
+
+logging:
+  level: INFO
+  json: true                  # structured logs for evidence capture
+  file: null
+
+evidence:
+  enabled: true
+  dir: evidence
+  label: testnet

@@ -1,0 +1,90 @@
+{
+  "family": "math",
+  "description": "Held-out quantitative items with exact answers.",
+  "items": [
+    {
+      "id": "math-001",
+      "difficulty": 5,
+      "prompt": "A validator samples 3 miners without replacement from a pool of 4 honest and 6 faulty miners. What is the probability that all 3 sampled miners are honest? Answer as a decimal to 4 decimal places.",
+      "answer": "0.0333",
+      "verifier": "numeric",
+      "params": {
+        "atol": 0.0005,
+        "rtol": 0.0
+      },
+      "keywords": [
+        "combination",
+        "without replacement",
+        "hypergeometric"
+      ],
+      "explanation": "C(4,3)/C(10,3) = 4/120 = 0.033333"
+    },
+    {
+      "id": "math-002",
+      "difficulty": 7,
+      "prompt": "Compute 7^123 mod 101. Answer with the integer only.",
+      "answer": "27",
+      "verifier": "numeric",
+      "params": {
+        "atol": 0.0,
+        "rtol": 0.0
+      },
+      "keywords": [
+        "fermat",
+        "modular exponentiation",
+        "modulus"
+      ],
+      "explanation": "pow(7,123,101) = 27"
+    },
+    {
+      "id": "math-003",
+      "difficulty": 6,
+      "prompt": "An emission pool of 1000 TAO-equivalents grows 3% per epoch, compounding, for 12 epochs. What is the final value to 2 decimal places?",
+      "answer": "1425.76",
+      "verifier": "numeric",
+      "params": {
+        "atol": 0.05,
+        "rtol": 0.0
+      },
+      "keywords": [
+        "compound",
+        "growth",
+        "exponent"
+      ],
+      "explanation": "1000 * 1.03^12"
+    },
+    {
+      "id": "math-004",
+      "difficulty": 4,
+      "prompt": "Solve for x: 7x - 19 = 3x + 21. Give the exact value.",
+      "answer": "10",
+      "verifier": "numeric",
+      "params": {
+        "atol": 0.001,
+        "rtol": 0.0
+      },
+      "keywords": [
+        "isolate",
+        "linear equation"
+      ],
+      "explanation": "4x = 40 → x = 10"
+    },
+    {
+      "id": "math-005",
+      "difficulty": 8,
+      "prompt": "A miner answers 40 tasks with a stated confidence of 0.8 on every one and is correct on 26 of them. What is its Brier score? Answer to 4 decimal places.",
+      "answer": "0.2500",
+      "verifier": "numeric",
+      "params": {
+        "atol": 0.0005,
+        "rtol": 0.0
+      },
+      "keywords": [
+        "brier",
+        "mean squared error",
+        "calibration"
+      ],
+      "explanation": "(26*(0.2^2) + 14*(0.8^2))/40 = (1.04 + 8.96)/40 = 0.25"
+    }
+  ]
+}
